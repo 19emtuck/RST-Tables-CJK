@@ -6,18 +6,18 @@ import vim
 import re
 
 def create_separarator(widths, char):
-    """Genera una linea para separar filas de una tabla.
+    """Generates a line to separate rows in a table.
 
-    El parametro `widths` es un lista indicando el ancho de cada
-    columna. En cambio el argumento `char` es el caracter que se
-    tiene que utilizar para imprimir.
+     The parameter `widths' is a list indicating the width of each
+     column. Instead the argument `char` is the character that is
+     have to use for printing.
 
-    El valor retornado es un string.
+     The return value is a string.
 
-    Por ejemplo::
+     For example ::
 
-        >>> create_separarator([2, 4], '-')
-        '+----+------+'
+         Create_separarator >>> ([2, 4], '-')
+         '+ ---- + ------ +'
     """
 
     line = []
@@ -30,17 +30,17 @@ def create_separarator(widths, char):
 
 
 def create_line(columns, widths):
-    """Crea una fila de la tabla separando los campos con un '|'.
+    """Create a table row separating fields with a '|'.
 
-    El argumento `columns` es una lista con las celdas que se
-    quieren imprimir y el argumento `widths` tiene el ancho
-    de cada columna. Si la columna es mas ancha que el texto
-    a imprimir se agregan espacios vacíos.
+     The argument `columns` is a list of cells that are
+     want to print and plot widths `` is the width
+     in each column. If the column is wider than the text
+     to print empty spaces are added.
 
-    Por ejemplo::
+     For example ::
 
-        >>> create_line(['nombre', 'apellido'], [7, 10])
-        '| nombre  | apellido   |'
+         Create_line >>> (['name', 'name'], [7, 10])
+         '| Name | name |'
     """
     
     line = zip(columns, widths)
@@ -55,21 +55,22 @@ def create_line(columns, widths):
     return ''.join(result)
 
 def create_table(content):
-    """Imprime una tabla en formato restructuredText.
+    """Print a table in reStructuredText format.
 
-    El argumento `content` tiene que ser una lista
-    de celdas.
+     The argument `content` must be a list
+     Cells.
 
-    Por ejemplo::
+     For example ::
 
-        >>> print create_table([['software', 'vesion'], ['python', '2.6'], ['vim', '7.2']])
-        +----------+--------+
-        | software | vesion |
-        +==========+========+
-        | python   | 2.6    |
-        +----------+--------+
-        | vim      | 7.2    |
-        +----------+--------+
+         Create_table >>> print ([['software', 'vesion'], ['python', '2 .6 '], [' vim ', '7 .2']])
+
+         +-----------+---------+
+         | Software  | vesion  |
+         +===========+=========+
+         | Python i  | 2.6     |
+         +-----------+---------+
+         | Vim       | 7.2     |
+         + ----------+---------+
     """
 
     # obtiene las columnas de toda la tabla.
@@ -92,21 +93,21 @@ def create_table(content):
 
 
 def are_in_a_table(current_line):
-    "Indica si el cursor se encuentra dentro de una tabla."
+    "Indicates whether the cursor is inside a table."
     return "|" in current_line or "+" in current_line
 
 def are_in_a_paragraph(current_line):
-    "Indica si la linea actual es parte de algun parrafo"
+    "Indicates whether the current line is part of any paragraph"
     return len(current_line.strip()) >= 1
 
 def get_table_bounds(current_row_index, are_in_callback):
-    """Obtiene el numero de fila donde comienza y termina la tabla.
+    """Gets the row number where the table begins and ends.
 
-    el argumento `are_in_callback` tiene que ser una función
-    que indique si una determinada linea pertenece o no
-    a la tabla que se quiere medir (o crear).
+     `` are_in_callback argument must be a function
+     to indicate whether a given line belongs or not
+     to the table to be measured (or create).
 
-    Retorna ambos valores como una tupla.
+     Returns two values as a tuple.
     """
 
     top = 0
@@ -127,7 +128,7 @@ def get_table_bounds(current_row_index, are_in_callback):
     return top, bottom
 
 def remove_spaces(string):
-    "Elimina los espacios innecesarios de una fila de tabla."
+    "Eliminate unnecessary spaces in a table row."
     return re.sub("\s\s+", " ", string)
 
 def create_separators_removing_spaces(string):
@@ -135,20 +136,20 @@ def create_separators_removing_spaces(string):
 
 
 def extract_cells_as_list(string):
-    "Extrae el texto de una fila de tabla y lo retorna como una lista."
+    "Extract text from a table row and returns it as a list."
     string = remove_spaces(string)
     return [item.strip() for item in string.split('|') if item]
 
 def extract_table(buffer, top, bottom):
     content = []
     full_table_text = buffer[top:bottom]
-    # selecciona solamente las lineas que tienen celdas con texto.
+    # selects only the lines that have cells with text.
     only_text_lines = [x for x in full_table_text if '|' in x]
-    # extrae las celdas y descarta los separadores innecesarios.
+    # cell extracts and discards unnecessary separators.
     return [extract_cells_as_list(x) for x in only_text_lines]
 
 def extract_words_as_lists(buffer, top, bottom):
-    "Genera una lista de palabras para crear una lista."
+    "Generate a list of words to create a list."
     
     lines = buffer[top:bottom+1]
     return [create_separators_removing_spaces(line).split('|') for line in lines]
@@ -161,10 +162,10 @@ def copy_to_buffer(buffer, string, index):
         index += 1
 
 def fix_table(current_row_index):
-    """Arregla una tabla para que todas las columnas tengan el mismo ancho.
+    """Set up a table so that all columns have the same width.
 
-    `initial_row` es un numero entero que indica en que
-    linea se encuenta el cursor."""
+     initial_row `` is an integer indicating that
+     current cursor line."""
 
     # obtiene el indice donde comienza y termina la tabla.
     r1, r2 = get_table_bounds(current_row_index, are_in_a_table)
@@ -172,7 +173,7 @@ def fix_table(current_row_index):
     # extrae de la tabla solo las celdas de texto
     table_as_list = extract_table(vim.current.buffer, r1, r2)
 
-    # genera una nueva tabla tipo restructured text y la dibuja en el buffer.
+    # generates a new table type restructured text and draws in the buffer.
     table_content = create_table(table_as_list)
     copy_to_buffer(vim.current.buffer, table_content, r1)
 
@@ -184,7 +185,7 @@ def FixTable():
     if are_in_a_table(line):
         fix_table(row-1)
     else:
-        print "No estoy en una tabla. Terminando..."
+        print "I'm not in a table. Finishing ..."
 
 
 def CreateTable():
