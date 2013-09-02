@@ -45,11 +45,11 @@ def create_line(columns, widths):
     
     line = zip(columns, widths)
     result = []
-
+    txt_encoding = vim.eval("g:rst_table_plugin_encoding")
     for text, width in line:
-        text=text.decode('utf-8').encode('gbk')
+        text=text.decode('utf-8').encode(txt_encoding)
         line="| " + text.ljust(width) + " "
-        result.append(line.decode('gbk').encode('utf-8'))
+        result.append(line.decode(txt_encoding).encode('utf-8'))
 
     result.append("|")
     return ''.join(result)
@@ -73,10 +73,11 @@ def create_table(content):
          + ----------+---------+
     """
 
-    # obtiene las columnas de toda la tabla.
+    # get all the columns of the table.
     columns = zip(*content)
-    # calcula el tamano maximo que debe tener cada columna.
-    widths = [max([len(x.decode('utf-8').encode('gbk')) for x in i]) for i in columns]
+    # calculates the maximum size that you need each column.
+    txt_encoding = vim.eval("g:rst_table_plugin_encoding")
+    widths = [max([len(x.decode('utf-8').encode(txt_encoding)) for x in i]) for i in columns]
 
     result = []
 
