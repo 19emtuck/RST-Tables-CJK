@@ -47,9 +47,9 @@ def create_line(columns, widths):
     result = []
     txt_encoding = vim.eval("g:rst_table_plugin_encoding")
     for text, width in line:
-        text=text.decode('utf-8').encode(txt_encoding)
-        line="| " + text.ljust(width) + " "
-        result.append(line.decode(txt_encoding).encode('utf-8'))
+	text=text.decode(txt_encoding)
+	line=u"| " + text.ljust(width) + u" "
+	result.append(line.encode(txt_encoding))
 
     result.append("|")
     return ''.join(result)
@@ -77,8 +77,8 @@ def create_table(content):
     columns = zip(*content)
     # calculates the maximum size that you need each column.
     txt_encoding = vim.eval("g:rst_table_plugin_encoding")
-    widths = [max([len(x.decode('utf-8').encode(txt_encoding)) for x in i]) for i in columns]
-
+    widths = [max([len(x) for x in i]) for i in columns]
+     
     result = []
 
     result.append(create_separarator(widths, '-'))
